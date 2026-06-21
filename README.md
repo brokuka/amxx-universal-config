@@ -1,4 +1,8 @@
-# Universal Config System
+<p align="center">
+  <img src="assets/logo.png" alt="Universal Config System" width="200">
+</p>
+
+<h1 align="center">Universal Config System</h1>
 
 A flexible **INI-like configuration engine for AMX Mod X**. Parse, read, modify and
 write config files with support for sections, key–value pairs, multi-value lines and
