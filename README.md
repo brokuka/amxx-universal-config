@@ -64,8 +64,8 @@ name = Player
 max_rounds = 10
 speed = 1.5
 
-; nested block example
-weapons {
+; nested block example (note the "= {" opener)
+weapons = {
     "weapon_ak47" "1"
     "weapon_m4a1" "1"
 }
@@ -135,24 +135,32 @@ if (aCol != Invalid_Array) {
 }
 ```
 
-### 4. Nested blocks — read by path
+### 4. Nested key-value blocks — read by path
+
+A block is opened with `key = {` and closed by `}` on its own line; each line inside
+is its own `subkey = value` (or a deeper `subkey = {` block). Read any depth with a
+`/`-separated path:
 
 ```ini
 [HUD]
-position {
-    top { x = 10 y = 20 }
+position = {
+    top = {
+        x = 10
+        y = 20
+    }
 }
 ```
 ```pawn
 new val[32];
 cfg_get_value_by_path(sec, "position/top/x", val, charsmax(val)); // "10"
+// cfg_get_value(sec, "position/top/x", ...) resolves the same path.
 ```
 
 ### 5. Iterate every row of a bracket block
 
 ```ini
 [Shop]
-weapons {
+weapons = {
     "weapon_ak47" "2500"
     "weapon_m4a1" "3100"
 }
