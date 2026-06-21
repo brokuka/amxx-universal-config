@@ -1,0 +1,52 @@
+name: build
+
+# Compile the plugin and attach the .amxx to a GitHub Release whenever a
+# version tag (e.g. v1.6.1) is pushed.
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch: {}   # allow manual runs from the Actions tab
+
+permissions:
+  contents: write          # needed to upload release assets
+
+env:
+  AMXX_URL: https://www.amxmodx.org/release/amxmodx-1.9.0-git5294-base-linux.tar.gz
+  PLUGIN: universal_config
+
+jobs:
+  compile:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install 32-bit runtime (amxxpc is i386)
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y libc6:i386 libstdc++6:i386
+
+      - name: Fetch AMX Mod X
+        run: |
+          curl -fSL "$AMXX_URL" -o amxx.tar.gz
+          mkdir -p amxx && tar xzf amxx.tar.gz -C amxx
+
+      - name: Compile
+        run: |
+          SCR=amxx/addons/amxmodx/scripting
+          cp scripting/include/*.inc "$SCR/include/"
+          chmod +x "$SCR/amxxpc" || true
+          (cd "$SCR" && ./amxxpc "$GITHUB_WORKSPACE/scripting/$PLUGIN.sma" -iinclude -o"$GITHUB_WORKSPACE/$PLUGIN.amxx")
+          test -f "$PLUGIN.amxx"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PLUGIN }}-amxx
+          path: ${{ env.PLUGIN }}.amxx
+
+      - name: Attach to Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.PLUGIN }}.amxx
