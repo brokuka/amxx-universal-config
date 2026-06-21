@@ -89,6 +89,19 @@ See `scripting/include/universal_config.inc` for the fully documented native lis
 | Saving | `cfg_save_config`, `cfg_write_file` |
 | Introspection | `cfg_has_key`, `cfg_get_sections_count`, `cfg_get_section_name`, `cfg_get_section_data` |
 
+## AI-assisted development (Claude Code skill)
+
+This repo ships a **[Claude Code](https://claude.com/claude-code) skill** at
+[`.claude/skills/universal_config/SKILL.md`](.claude/skills/universal_config/SKILL.md).
+
+When you develop a plugin with Claude Code inside (or alongside) this repo, the AI
+automatically picks up the skill and gets a condensed, accurate guide to the engine —
+the API surface, the read/write recipes, and the gotchas that bite (e.g.
+`cfg_save_config` vs `cfg_write_file`, nested-block write limits). It helps the model
+write correct `cfg_*` code without you having to explain the engine each time.
+
+No setup needed — just have the skill file in your workspace.
+
 ## Use cases & recipes
 
 Every scenario the engine is designed for, with runnable snippets.
